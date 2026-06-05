@@ -16,7 +16,6 @@ const Register = () => {
   const [form, setForm] = useState<RegisterForm>({ name: '', email: '', password: '', confirmPassword: '', adminKey: '' });
   const [showAdminKey, setShowAdminKey] = useState(false);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const { register, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -65,15 +64,12 @@ const Register = () => {
       return;
     }
 
-    setLoading(true);
     try {
       await register(form.name.trim(), form.email.trim(), form.password, form.adminKey || undefined);
       navigate('/dashboard', { replace: true });
     } catch (err) {
       const axiosErr = err as AxiosError<{ message?: string }>;
       setError(axiosErr.response?.data?.message || (err as Error).message || 'Registration failed. Please try again.');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -96,7 +92,6 @@ const Register = () => {
               onChange={handleChange}
               placeholder="Your full name"
               autoComplete="name"
-              disabled={loading}
               required
             />
           </div>
@@ -111,7 +106,6 @@ const Register = () => {
               onChange={handleChange}
               placeholder="you@example.com"
               autoComplete="email"
-              disabled={loading}
               required
             />
           </div>
@@ -126,7 +120,6 @@ const Register = () => {
               onChange={handleChange}
               placeholder="Min 8 chars, 1 uppercase, 1 number"
               autoComplete="new-password"
-              disabled={loading}
               required
             />
           </div>
@@ -141,7 +134,6 @@ const Register = () => {
               onChange={handleChange}
               placeholder="Repeat your password"
               autoComplete="new-password"
-              disabled={loading}
               required
             />
           </div>
@@ -162,14 +154,11 @@ const Register = () => {
                 value={form.adminKey}
                 onChange={handleChange}
                 placeholder="Enter admin secret key"
-                disabled={loading}
               />
             </div>
           )}
 
-          <button type="submit" className="btn-submit" disabled={loading}>
-            {loading ? <span className="btn-spinner" /> : 'Create Account'}
-          </button>
+          <button type="submit" className="btn-submit">Create Account</button>
         </form>
 
         <p className="auth-footer">

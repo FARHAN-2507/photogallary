@@ -40,8 +40,9 @@ const Upload = () => {
           if (progressEvent.total) {
             setUploadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total));
           }
-        }
-      });
+        },
+        skipGlobalLoader: true
+      } as any);
 
       if (data.success) {
         setUploadProgress(100);

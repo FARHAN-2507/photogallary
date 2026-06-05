@@ -12,7 +12,6 @@ interface LoginForm {
 const Login = () => {
   const [form, setForm] = useState<LoginForm>({ email: '', password: '' });
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -35,15 +34,12 @@ const Login = () => {
       return;
     }
 
-    setLoading(true);
     try {
       await login(form.email.trim(), form.password);
       navigate('/dashboard', { replace: true });
     } catch (err) {
       const axiosErr = err as AxiosError<{ message?: string }>;
       setError(axiosErr.response?.data?.message || (err as Error).message || 'Login failed. Please try again.');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -66,7 +62,6 @@ const Login = () => {
               onChange={handleChange}
               placeholder="you@example.com"
               autoComplete="email"
-              disabled={loading}
               required
             />
           </div>
@@ -81,14 +76,11 @@ const Login = () => {
               onChange={handleChange}
               placeholder="Enter your password"
               autoComplete="current-password"
-              disabled={loading}
               required
             />
           </div>
 
-          <button type="submit" className="btn-submit" disabled={loading}>
-            {loading ? <span className="btn-spinner" /> : 'Sign In'}
-          </button>
+          <button type="submit" className="btn-submit">Sign In</button>
         </form>
 
         <p className="auth-footer">
